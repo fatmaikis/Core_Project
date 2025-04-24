@@ -7,9 +7,12 @@ using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -47,12 +50,18 @@ builder.Services.AddScoped<IUserMessageService, UserMessageManager>();
 builder.Services.AddScoped<IToDoListDal, EfToDoListDal>();
 builder.Services.AddScoped<IToDoListService, ToDoListManager>();
 
+
+builder.Services.AddScoped<IAnnouncementDal, EFAnnouncementDal>();
+builder.Services.AddScoped<IAnnouncementService, AnnouncementManager>();
+
 //builder.Services.AddScoped<IValidator<Portfolio>, PortfolioValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<PortfolioValidator>();
 
 
 
 builder.Services.AddDbContext<Context>();
+builder.Services.AddIdentity<WriterUser, WriterRole>().AddEntityFrameworkStores<Context>().AddDefaultTokenProviders();
+
 
 var app = builder.Build();
 
@@ -66,7 +75,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseAuthentication();
 app.UseRouting();
 
 app.UseAuthorization();
@@ -74,5 +83,13 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Default}/{action=Index}/{id?}"
+    );
+});
 
 app.Run();

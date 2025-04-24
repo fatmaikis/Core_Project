@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Abstract;
+using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
@@ -10,36 +11,36 @@ namespace BusinessLayer.Concrete
 {
     public class ToDoListManager : IToDoListService
     {
-        private readonly IToDoListService _toDoListService;
+        private readonly IToDoListDal _toDoListDal;
 
-        public ToDoListManager(IToDoListService toDoListService)
+        public ToDoListManager(IToDoListDal toDoListDal)
         {
-            _toDoListService = toDoListService;
+            _toDoListDal = toDoListDal;
         }
 
         public void TAdd(ToDoList t)
         {
-            _toDoListService.TAdd(t);
+            _toDoListDal.Insert(t); 
         }
 
         public void TDelete(ToDoList t)
         {
-            _toDoListService.TDelete(t);
+            _toDoListDal.Delete(t);
         }
 
         public ToDoList TGetByID(int id)
         {
-            return _toDoListService.TGetByID(id);
+            return _toDoListDal.GetByID(id);
         }
 
         public List<ToDoList> TGetList()
         {
-            return _toDoListService.TGetList();
+            return _toDoListDal.GetList();
         }
 
         public void TUpdate(ToDoList t)
         {
-            _toDoListService.TUpdate(t);    
+            _toDoListDal.Update(t); 
         }
     }
 }
